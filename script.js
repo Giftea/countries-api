@@ -5,28 +5,25 @@ var state = {
   window: 5,
 };
 
-function fetchCountry() {
+async function  fetchCountry () {
   document.getElementById("card-holder").innerHTML = '<img src="./Spinner-1s-200px.svg" id="spin" alt="">';
   document.getElementById("spin").style.display = "block";
-  const xhr = new XMLHttpRequest();
-  xhr.open("GET", "https://restcountries.eu/rest/v2/all");
-  xhr.send();
-
-  xhr.onload = () => {
-    setTimeout(() => {
-      document.getElementById("spin").style.display = "none";
-      if (xhr.status === 200) {
-        const data = JSON.parse(xhr.response);
+    try {
+      const response = await fetch ("https://restcountries.eu/rest/v2/all")
+      const data = await response.json()
+      setTimeout(() => {
+        document.getElementById("spin").style.display="none";
         state.querySet = data;
-        buildTable();
-      } else {
-        const status = xhr.status;
-        const error = "Oops, seems like there was an error, try again!";
-        alert(error);
-        document.getElementById("modal").style.display = "flex";
-      }
-    }, 1000);
-  };
+        buildTable ();
+      }, 1000);
+    } catch(e) {
+      const error = "oops,seems like there was an error, try again!";
+      e = error
+      alert(e)
+      document.getElementById("spin").style.display="none";
+
+      // document.getElementById("modal").style.display = "flex";
+    }
 }
 
 fetchCountry();
